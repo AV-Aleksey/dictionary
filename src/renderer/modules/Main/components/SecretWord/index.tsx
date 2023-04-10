@@ -1,7 +1,7 @@
 import { FC, useState } from 'react';
 import { Badge, Button, Typography } from 'antd';
 
-import { Tile } from 'collaborative/ui/Tile';
+import { Tile } from 'renderer/collaborative/ui/Tile';
 import { AlignCenterOutlined } from '@ant-design/icons';
 import css from './styles.module.css';
 

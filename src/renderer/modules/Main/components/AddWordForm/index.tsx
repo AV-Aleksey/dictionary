@@ -1,7 +1,7 @@
 import { Button, Form, Input, Space } from 'antd';
 
 import css from './styles.module.css';
-import { wordStore } from '../../../../../collaborative/stores/wordsStore';
+import { wordStore } from '../../../../collaborative/stores/wordsStore';
 
 type WordForm = {
   ru: string;

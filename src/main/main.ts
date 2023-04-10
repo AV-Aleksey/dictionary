@@ -12,10 +12,13 @@ import path from 'path';
 import { app, BrowserWindow, shell, ipcMain } from 'electron';
 import { autoUpdater } from 'electron-updater';
 import log from 'electron-log';
+import sqlite3 from 'sqlite3';
 import MenuBuilder from './menu';
 import { resolveHtmlPath } from './util';
 
-import './db';
+const db = new sqlite3.Database(`${__dirname}/testdb.db`, (x) => {
+  console.log(x);
+});
 
 class AppUpdater {
   constructor() {
@@ -31,6 +34,16 @@ ipcMain.on('ipc-example', async (event, arg) => {
   const msgTemplate = (pingPong: string) => `IPC test: ${pingPong}`;
   console.log(msgTemplate(arg));
   event.reply('ipc-example', msgTemplate('pong'));
+});
+
+ipcMain.on('asynchronous-message', (event, arg) => {
+  const sql = arg;
+
+  db.serialize(() => {
+    db.all(sql, (err, rows) => {
+      event.reply('asynchronous-reply', (err && err.message) || rows);
+    });
+  });
 });
 
 if (process.env.NODE_ENV === 'production') {
@@ -81,6 +94,7 @@ const createWindow = async () => {
       preload: app.isPackaged
         ? path.join(__dirname, 'preload.js')
         : path.join(__dirname, '../../.erb/dll/preload.js'),
+      contextIsolation: true, // Isolating context so our app is not exposed to random javascript executions making it safer.
     },
   });
 
