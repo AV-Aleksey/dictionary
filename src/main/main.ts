@@ -12,13 +12,16 @@ import path from 'path';
 import { app, BrowserWindow, shell, ipcMain } from 'electron';
 import { autoUpdater } from 'electron-updater';
 import log from 'electron-log';
-import sqlite3 from 'sqlite3';
+
 import MenuBuilder from './menu';
 import { resolveHtmlPath } from './util';
+import { sequelize } from './db/connect';
+import { requestDataBase } from './db/actions';
 
-const db = new sqlite3.Database(`${__dirname}/testdb.db`, (x) => {
-  console.log(x);
-});
+sequelize
+  .sync()
+  .then(() => console.log('<<<<<DB CONNECT>>>>'))
+  .catch(console.log);
 
 class AppUpdater {
   constructor() {
@@ -36,14 +39,11 @@ ipcMain.on('ipc-example', async (event, arg) => {
   event.reply('ipc-example', msgTemplate('pong'));
 });
 
-ipcMain.on('asynchronous-message', (event, arg) => {
-  const sql = arg;
+ipcMain.on('asynchronous-message', async (event, ...args) => {
+  const [action, payload] = args ?? [];
+  const data = await requestDataBase(action, payload);
 
-  db.serialize(() => {
-    db.all(sql, (err, rows) => {
-      event.reply('asynchronous-reply', (err && err.message) || rows);
-    });
-  });
+  event.reply('asynchronous-reply', data);
 });
 
 if (process.env.NODE_ENV === 'production') {
@@ -145,6 +145,7 @@ app
   .whenReady()
   .then(() => {
     createWindow();
+
     app.on('activate', () => {
       // On macOS it's common to re-create a window in the app when the
       // dock icon is clicked and there are no other windows open.

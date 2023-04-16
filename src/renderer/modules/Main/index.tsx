@@ -1,14 +1,12 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { observer } from 'mobx-react';
 
 import { AddWordForm } from './components/AddWordForm';
 import { SecretWord } from './components/SecretWord';
 import { Space } from '../../collaborative/ui/Space';
-import { wordStore } from '../../collaborative/stores/wordsStore';
 
 export const Main = observer(() => {
-  console.log(wordStore.words);
-
+  // console.log(wordStore.words);
   return (
     <>
       <AddWordForm />

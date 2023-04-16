@@ -5,10 +5,14 @@
 import webpack from 'webpack';
 import TsconfigPathsPlugins from 'tsconfig-paths-webpack-plugin';
 import webpackPaths from './webpack.paths';
-import { dependencies as externals } from '../../release/app/package.json';
 
 const configuration: webpack.Configuration = {
-  externals: [...Object.keys(externals || {})],
+  externals: {
+    'pg-hstore': 'pg-hstore',
+    sqlite3: 'commonjs sqlite3',
+    'electron-debug': 'electron-debug',
+    fs: 'fs',
+  },
 
   stats: 'errors-only',
 
@@ -43,6 +47,13 @@ const configuration: webpack.Configuration = {
    * Determine the array of extensions that should be used to resolve modules.
    */
   resolve: {
+    fallback: {
+      url: require.resolve('url'),
+      sqlite3: require.resolve('sqlite3'),
+      stream: require.resolve('stream-browserify'),
+      crypto: require.resolve('crypto-browserify'),
+      path: require.resolve('path-browserify'),
+    },
     extensions: ['.js', '.jsx', '.json', '.ts', '.tsx'],
     modules: [webpackPaths.srcPath, 'node_modules'],
     // There is no need to add aliases here, the paths in tsconfig get mirrored

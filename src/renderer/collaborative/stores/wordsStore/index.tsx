@@ -1,7 +1,8 @@
+/* eslint-disable */
 import { action, computed, flow, makeObservable, observable } from 'mobx';
 
-import { repo } from 'renderer/collaborative/repository';
-import { Word } from '../../types';
+import { getWords } from "../../repository";
+import { Word } from "../../../../main/db/models";
 
 export class WordsStore {
   private wordsList: Word[] | null = [];
@@ -19,7 +20,8 @@ export class WordsStore {
   }
 
   public initWords = flow(function* (this: WordsStore) {
-    this.wordsList = yield repo.getWords();
+    this.wordsList = yield getWords();
+    console.log(this.wordsList);
     this.setInitStatus(true);
   });
 
