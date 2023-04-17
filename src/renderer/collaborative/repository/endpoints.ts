@@ -1,10 +1,12 @@
 import { Word } from '../../../main/db/models';
+import { CreateWordPayload } from '../../../main/events/types';
 
 export type GetWords = {
-  response: Word[];
+  payload: {};
+  response: Promise<Word[]>;
 };
 
 export type CreateWord = {
-  response: { id: number };
-  payload: { ru: string; eng: string };
+  response: Promise<{ id: number }>;
+  payload: CreateWordPayload;
 };

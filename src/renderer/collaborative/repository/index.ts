@@ -1,11 +1,10 @@
 import { callDataBase } from '../root/ConnectDataBase/callDataBase';
-import { Action } from '../../../main/db/types';
-import { CreateWord } from './endpoints';
+import { CreateWord, GetWords } from './endpoints';
 
 export async function getWords() {
-  return callDataBase(Action.getWords);
+  return callDataBase<GetWords>('db_get_words');
 }
 
 export async function createWord(payload: CreateWord['payload']) {
-  return callDataBase(Action.createWord, payload);
+  return callDataBase<CreateWord>('db_create_word', payload);
 }

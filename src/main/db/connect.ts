@@ -1,8 +1,8 @@
 import { Sequelize } from 'sequelize-typescript';
+import sqlite3 from 'sqlite3';
 import path from 'path';
-import * as models from './models';
 
-const sqlite3 = require('sqlite3');
+import * as models from './models';
 
 export const sequelize = new Sequelize({
   dialect: 'sqlite',

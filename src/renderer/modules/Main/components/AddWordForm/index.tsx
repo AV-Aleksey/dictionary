@@ -11,10 +11,13 @@ type WordForm = {
 export const AddWordForm = () => {
   const [form] = Form.useForm<WordForm>();
 
-  const handleSubmit = (values: WordForm) => {
-    wordStore.setWord({ id: wordStore.words.length + 1, ...values });
-
-    form.resetFields();
+  const handleSubmit = async (values: WordForm) => {
+    try {
+      await wordStore.createWord({ ru: values.ru, eng: values.eng });
+      form.resetFields();
+    } catch (e) {
+      console.log(e);
+    }
   };
 
   const messages = [{ required: true, message: '' }];

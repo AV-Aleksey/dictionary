@@ -3,7 +3,6 @@ import { Spin } from 'antd';
 import { observer } from 'mobx-react';
 import { wordStore } from '../../stores/wordsStore';
 import { Container } from '../../layout/Container';
-import { createWord } from '../../repository';
 
 type Props = {
   children: ReturnType<FC>;
@@ -14,7 +13,6 @@ export const ConnectDataBase: FC<Props> = observer(({ children }) => {
 
   useEffect(() => {
     wordStore.initWords();
-    // createWord({ ru: 'Привет', eng: 'Hello' }).then(console.log);
   }, []);
 
   if (hasErr) {
