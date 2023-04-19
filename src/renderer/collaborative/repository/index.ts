@@ -1,23 +1,10 @@
-const sendDb = (message: string) => {
-  return new Promise((resolve) => {
-    window.electron.ipcRenderer.once('asynchronous-reply', (data) => {
-      resolve(data);
-    });
-    window.electron.ipcRenderer.sendMessage('asynchronous-message', [message]);
-  });
-};
+import { callDataBase } from '../root/ConnectDataBase/callDataBase';
+import { CreateWord, GetWords } from './endpoints';
 
-class Repository {
-  public async addWord(ru: string, eng: string) {
-    await sendDb(`INSERT INTO user (name, age) VALUES(${ru}, ${eng})`);
-
-    return this.getWords();
-  }
-
-  // eslint-disable-next-line class-methods-use-this
-  public async getWords() {
-    return sendDb('SELECT * FROM user');
-  }
+export async function getWords() {
+  return callDataBase<GetWords>('db_get_words');
 }
 
-export const repo = new Repository();
+export async function createWord(payload: CreateWord['payload']) {
+  return callDataBase<CreateWord>('db_create_word', payload);
+}

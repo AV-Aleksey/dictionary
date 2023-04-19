@@ -1,11 +1,11 @@
 // Disable no-unused-vars, broken for spread args
 /* eslint no-unused-vars: off */
 import { contextBridge, ipcRenderer, IpcRendererEvent } from 'electron';
+import { DataBaseChannels } from './events/types';
 
 export type Channels =
-  | 'ipc-example'
-  | 'asynchronous-reply'
-  | 'asynchronous-message';
+  | ('asynchronous-reply' | 'asynchronous-message')
+  | DataBaseChannels;
 
 const electronHandler = {
   ipcRenderer: {

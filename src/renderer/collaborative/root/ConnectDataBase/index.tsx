@@ -12,15 +12,7 @@ export const ConnectDataBase: FC<Props> = observer(({ children }) => {
   const [hasErr, setHasErr] = useState(false);
 
   useEffect(() => {
-    setTimeout(() => {
-      wordStore
-        .initWords()
-        .then()
-        .catch((e) => {
-          console.log(e);
-          setHasErr(true);
-        });
-    }, 1000);
+    wordStore.initWords();
   }, []);
 
   if (hasErr) {
