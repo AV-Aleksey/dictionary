@@ -7,6 +7,11 @@ export type GetWords = {
 };
 
 export type CreateWord = {
-  response: Promise<{ id: number }>;
   payload: CreateWordPayload;
+  response: Promise<{ id: number }>;
+};
+
+export type DeleteWords = {
+  payload: number[];
+  response: Promise<{ deleted: boolean }>;
 };
