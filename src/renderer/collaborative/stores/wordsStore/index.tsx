@@ -1,17 +1,27 @@
 /* eslint-disable */
-import { action, computed, flow, makeObservable, observable } from 'mobx';
+import { action, computed, flow, makeObservable, observable, isAction } from 'mobx';
 
 import { createWord, getWords } from "../../repository";
-import { Word } from "../../../../main/db/models";
 import { CreateWord } from "../../repository/endpoints";
+import { Control } from "./control";
+
+type Word = {
+  id: number;
+  ru: string;
+  eng: string;
+}
 
 export class WordsStore {
-  private wordsList: Word[] | null = [];
+  public control = new Control(this);
+
+  public wordsList: Word[] | null = [];
 
   public initHasBeenDone = false;
 
   constructor() {
     makeObservable(this, {
+      wordsList: observable,
+
       setWordLocally: action.bound,
       initHasBeenDone: observable,
 
@@ -27,17 +37,18 @@ export class WordsStore {
   });
 
   public createWord = flow(function* (this: WordsStore, params: CreateWord['payload']) {
-    const word = yield createWord(params);
-
-    console.log(word);
+    const { id } = yield createWord(params);
+    this.setWordLocally({ id, ...params })
   })
 
   public setWordLocally(word: Word) {
-    if (!this.wordsList) {
-      throw new Error('please use init words');
-    }
+    this.wordsList?.push(word);
+  }
 
-    this.wordsList.push(word);
+  public deleteWordsLocally(wordIds: number[]) {
+    if (this.wordsList) {
+      this.wordsList = this.wordsList?.filter(({ id }) => !wordIds.includes(id))
+    }
   }
 
   private setInitStatus(status: boolean) {

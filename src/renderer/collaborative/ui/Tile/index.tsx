@@ -7,7 +7,5 @@ type Props = {
 };
 
 export const Tile: FC<Props> = ({ children }) => {
-  console.log(1);
-
   return <div className={css.wrap}>{children}</div>;
 };

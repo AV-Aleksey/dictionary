@@ -1,21 +1,36 @@
 import { FC, useState } from 'react';
-import { Badge, Button, Typography } from 'antd';
+import { Badge, Button, Checkbox, Typography } from 'antd';
 
 import { Tile } from 'renderer/collaborative/ui/Tile';
 import { AlignCenterOutlined } from '@ant-design/icons';
+import { CheckboxChangeEvent } from 'antd/es/checkbox';
 import css from './styles.module.css';
 
 type Props = {
+  id: number;
   ru: string;
   eng: string;
+  isDeleteMode: boolean;
   hasEngSecret?: boolean;
+  onSelect: (data: Record<number, boolean>) => void;
 };
 
-export const SecretWord: FC<Props> = ({ ru, eng, hasEngSecret = true }) => {
+export const SecretWord: FC<Props> = ({
+  id,
+  ru,
+  eng,
+  hasEngSecret = true,
+  isDeleteMode = false,
+  onSelect,
+}) => {
   const [showSecret, setShowSecret] = useState(false);
 
   const handleToggleSecret = () => {
     setShowSecret(!showSecret);
+  };
+
+  const handleChangeDelete = (e: CheckboxChangeEvent) => {
+    onSelect({ [id]: e.target.checked });
   };
 
   const getSecretText = () => {
@@ -33,6 +48,8 @@ export const SecretWord: FC<Props> = ({ ru, eng, hasEngSecret = true }) => {
   return (
     <Tile>
       <div className={css.wrap}>
+        {isDeleteMode && <Checkbox onChange={handleChangeDelete} />}
+
         <div className={css.textWrap}>
           <Typography.Paragraph className={css.text}>
             {hasEngSecret ? ru : eng}
@@ -43,7 +60,6 @@ export const SecretWord: FC<Props> = ({ ru, eng, hasEngSecret = true }) => {
           <div>
             <Badge color="#f50" size="small" />
           </div>
-          <Button icon="1" />
           <Button onClick={handleToggleSecret} icon={<AlignCenterOutlined />} />
         </div>
       </div>
