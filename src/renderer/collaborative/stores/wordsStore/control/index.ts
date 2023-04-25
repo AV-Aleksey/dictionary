@@ -1,11 +1,4 @@
-import {
-  action,
-  makeObservable,
-  observable,
-  flow,
-  isAction,
-  computed,
-} from 'mobx';
+import { action, makeObservable, observable, flow, computed } from 'mobx';
 import { WordsStore } from '../index';
 import { deleteWords } from '../../../repository';
 

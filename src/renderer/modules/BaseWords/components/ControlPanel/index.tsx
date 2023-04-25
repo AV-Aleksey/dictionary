@@ -3,7 +3,7 @@ import React, { FC } from 'react';
 import { observer } from 'mobx-react';
 import { DeleteOutlined, EditOutlined, SyncOutlined } from '@ant-design/icons';
 
-import { Space } from '../../../../collaborative/ui/Space';
+import { Space } from '../../../../collaborative/components/ui/Space';
 import { wordStore } from '../../../../collaborative/stores/wordsStore';
 
 export const ControlPanel: FC = observer(() => {

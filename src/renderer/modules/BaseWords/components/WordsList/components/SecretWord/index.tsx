@@ -1,7 +1,7 @@
 import { FC, useState } from 'react';
 import { Badge, Button, Checkbox, Typography } from 'antd';
 
-import { Tile } from 'renderer/collaborative/ui/Tile';
+import { Tile } from 'renderer/collaborative/components/ui/Tile';
 import { AlignCenterOutlined } from '@ant-design/icons';
 import { CheckboxChangeEvent } from 'antd/es/checkbox';
 import css from './styles.module.css';
