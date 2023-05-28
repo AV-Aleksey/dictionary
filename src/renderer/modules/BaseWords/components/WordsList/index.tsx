@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { observer } from 'mobx-react';
-import { Space } from '../../../../collaborative/ui/Space';
+import { Space } from '../../../../collaborative/components/ui/Space';
 import { wordStore } from '../../../../collaborative/stores/wordsStore';
 import { SecretWord } from './components/SecretWord';
 
