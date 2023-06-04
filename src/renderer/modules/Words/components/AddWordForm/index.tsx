@@ -1,5 +1,6 @@
 import { Button, Form, Input, Space } from 'antd';
 
+import { observer } from 'mobx-react';
 import css from './styles.module.css';
 import { wordStore } from '../../../../collaborative/stores/wordsStore';
 
@@ -8,33 +9,29 @@ type WordForm = {
   eng: string;
 };
 
-export const AddWordForm = () => {
+export const AddWordForm = observer(() => {
   const [form] = Form.useForm<WordForm>();
-
-  const handleSubmit = async (values: WordForm) => {
-    try {
-      await wordStore.createWord({ ru: values.ru, eng: values.eng });
-      form.resetFields();
-    } catch (e) {
-      console.log(e);
-    }
-  };
 
   const messages = [{ required: true, message: '' }];
 
+  const handleSubmit = (values: WordForm) => {
+    wordStore.control.createWord({ ru: values.ru, eng: values.eng });
+    form.resetFields();
+  };
+
   return (
     <Form form={form} layout="vertical" onFinish={handleSubmit}>
-      <Space className={css.space} size={16}>
+      <Space>
         <Form.Item name="ru" rules={messages}>
-          <Input size="large" placeholder="Введите слово" />
+          <Input size="middle" placeholder="Введите слово" />
         </Form.Item>
         <Form.Item name="eng" rules={messages}>
-          <Input size="large" placeholder="Введите перевод" />
+          <Input size="middle" placeholder="Введите перевод" />
         </Form.Item>
         <Button
           className={css.btn}
           htmlType="submit"
-          size="large"
+          size="middle"
           type="primary"
         >
           Добавить
@@ -42,4 +39,4 @@ export const AddWordForm = () => {
       </Space>
     </Form>
   );
-};
+});

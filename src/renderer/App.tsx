@@ -5,8 +5,10 @@ import './App.css';
 import { Main } from './modules/Main';
 import { Container } from './collaborative/layout/Container';
 import { ConnectDataBase } from './collaborative/root/ConnectDataBase';
-import { BaseWords } from './modules/BaseWords';
+import { Training } from './modules/Training';
 import { Navigation } from './collaborative/components';
+import { routes } from './routes';
+import { Words } from './modules/Words';
 
 export default function App() {
   return (
@@ -15,8 +17,12 @@ export default function App() {
         <Router>
           <Navigation />
           <Routes>
-            <Route path="/" element={<Main />} />
-            <Route path="words" element={<BaseWords />} />
+            <Route path={routes.main.path} element={<Main />} />
+            <Route
+              path={routes.main.children.training.path}
+              element={<Training />}
+            />
+            <Route path={routes.main.children.words.path} element={<Words />} />
           </Routes>
         </Router>
       </ConnectDataBase>

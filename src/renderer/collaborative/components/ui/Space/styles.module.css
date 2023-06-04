@@ -1,0 +1,45 @@
+.inline {
+  display: inline-flex;
+}
+
+.block {
+  display: flex;
+}
+
+.horizontal {
+  flex-direction: row;
+}
+
+.vertical {
+  flex-direction: column;
+}
+
+.wrap {
+  flex-wrap: wrap;
+}
+
+.small {
+  --space: 8px;
+}
+
+.medium {
+  --space: 16px;
+}
+
+.large {
+  --space: 24px;
+}
+
+.flexible {
+  gap: var(--space);
+}
+
+.horizontal:not(.flexible) > *:not(:last-child) {
+  margin-right: var(--space);
+}
+
+.vertical:not(.flexible) > *:not(:last-child) {
+  margin-bottom: var(--space);
+}
+
+

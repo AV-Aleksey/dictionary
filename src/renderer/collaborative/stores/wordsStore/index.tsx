@@ -21,35 +21,21 @@ export class WordsStore {
   constructor() {
     makeObservable(this, {
       wordsList: observable,
+      control: observable,
 
-      setWordLocally: action.bound,
       initHasBeenDone: observable,
 
-      words: computed,
       initHasWasFished: computed,
     });
   }
+
+
 
   public initWords = flow(function* (this: WordsStore) {
     this.wordsList = yield getWords();
 
     this.setInitStatus(true);
   });
-
-  public createWord = flow(function* (this: WordsStore, params: CreateWord['payload']) {
-    const { id } = yield createWord(params);
-    this.setWordLocally({ id, ...params })
-  })
-
-  public setWordLocally(word: Word) {
-    this.wordsList?.push(word);
-  }
-
-  public deleteWordsLocally(wordIds: number[]) {
-    if (this.wordsList) {
-      this.wordsList = this.wordsList?.filter(({ id }) => !wordIds.includes(id))
-    }
-  }
 
   private setInitStatus(status: boolean) {
     this.initHasBeenDone = status;

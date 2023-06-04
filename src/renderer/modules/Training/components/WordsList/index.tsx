@@ -11,14 +11,7 @@ export const WordsList = observer(() => {
   return (
     <Space block size={8} direction="vertical">
       {wordStore.words.map(({ id, ru, eng }) => (
-        <SecretWord
-          id={id}
-          ru={ru}
-          eng={eng}
-          key={String(id)}
-          onSelect={store.control.addWordToDelete}
-          isDeleteMode={store.control.isDeleteMode}
-        />
+        <SecretWord id={id} ru={ru} eng={eng} key={String(id)} />
       ))}
     </Space>
   );

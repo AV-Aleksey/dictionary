@@ -1,36 +1,81 @@
-import React, { CSSProperties, FC } from 'react';
+import React, {
+  useMemo,
+  ReactNode,
+  forwardRef,
+  CSSProperties,
+  HTMLAttributes,
+  useCallback,
+} from 'react';
+import { isString, isNumber } from 'lodash';
+import cn from 'classnames';
 
 import css from './styles.module.css';
 
-type Props = {
-  block?: boolean;
-  direction?: 'vertical' | 'horizontal';
-  size?: number;
-  children?: any;
-};
+type Events = Pick<
+  HTMLAttributes<HTMLDivElement>,
+  'onClick' | 'onMouseEnter' | 'onMouseLeave' | 'onFocus'
+>;
 
-export const Space: FC<Props> = ({
-  block = true,
-  direction = 'vertical',
-  size = 8,
-  children,
-}) => {
-  const wrapStyle = {
-    display: block ? 'flex' : 'inline-flex',
-    flexDirection: direction === 'vertical' ? 'column' : 'row',
-    width: block ? '100%' : undefined,
-  } as CSSProperties;
+export type SpaceProps = Partial<{
+  wrap: boolean;
+  block: boolean;
+  className: string;
+  children: ReactNode;
+  flex: CSSProperties['flex'];
+  align: CSSProperties['alignItems'];
+  justify: CSSProperties['justifyContent'];
+  direction: 'horizontal' | 'vertical';
+  size: 'small' | 'medium' | 'large' | 'responsive' | number;
+}> &
+  Events;
 
-  const itemStyle = {
-    marginRight: direction === 'horizontal' ? size : undefined,
-    marginBottom: direction === 'vertical' ? size : undefined,
-  } as CSSProperties;
+export const Space = forwardRef<HTMLDivElement, SpaceProps>(
+  ({
+    wrap,
+    flex,
+    block,
+    align,
+    justify,
+    children,
+    className,
+    size = 'small',
+    direction = 'horizontal',
+    ...events
+  }) => {
+    const innerRef = useCallback(
+      (node: HTMLDivElement | null) => {
+        if (node && isNumber(size)) {
+          node.style.setProperty('--space', `${size}px`);
+        }
+      },
+      [size]
+    );
 
-  return (
-    <div style={wrapStyle} className={css.wrap}>
-      {React.Children.map(children, (item) => (
-        <div style={itemStyle}>{item}</div>
-      ))}
-    </div>
-  );
-};
+    const style = useMemo(
+      () => ({ flex, alignItems: align, justifyContent: justify }),
+      [flex, align, justify]
+    );
+
+    return (
+      <div
+        ref={innerRef}
+        className={cn(
+          css[direction],
+          className,
+          block ? css.block : css.inline,
+          {
+            [css.wrap]: wrap,
+            [css[size]]: isString(size),
+            [css.flexible]: true,
+          }
+        )}
+        style={style}
+        {...events}
+      >
+        {children}
+      </div>
+    );
+  }
+);
+
+Space.displayName = 'Space';
