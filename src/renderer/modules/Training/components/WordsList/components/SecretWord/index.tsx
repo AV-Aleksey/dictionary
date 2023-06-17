@@ -10,27 +10,14 @@ type Props = {
   id: number;
   ru: string;
   eng: string;
-  isDeleteMode: boolean;
   hasEngSecret?: boolean;
-  onSelect: (data: Record<number, boolean>) => void;
 };
 
-export const SecretWord: FC<Props> = ({
-  id,
-  ru,
-  eng,
-  hasEngSecret = true,
-  isDeleteMode = false,
-  onSelect,
-}) => {
+export const SecretWord: FC<Props> = ({ ru, eng, hasEngSecret = true }) => {
   const [showSecret, setShowSecret] = useState(false);
 
   const handleToggleSecret = () => {
     setShowSecret(!showSecret);
-  };
-
-  const handleChangeDelete = (e: CheckboxChangeEvent) => {
-    onSelect({ [id]: e.target.checked });
   };
 
   const getSecretText = () => {
@@ -48,8 +35,6 @@ export const SecretWord: FC<Props> = ({
   return (
     <Tile>
       <div className={css.wrap}>
-        {isDeleteMode && <Checkbox onChange={handleChangeDelete} />}
-
         <div className={css.textWrap}>
           <Typography.Paragraph className={css.text}>
             {hasEngSecret ? ru : eng}
@@ -57,9 +42,6 @@ export const SecretWord: FC<Props> = ({
           <div className={css.secretTextWrap}>{getSecretText()}</div>
         </div>
         <div className={css.controlWrap}>
-          <div>
-            <Badge color="#f50" size="small" />
-          </div>
           <Button onClick={handleToggleSecret} icon={<AlignCenterOutlined />} />
         </div>
       </div>

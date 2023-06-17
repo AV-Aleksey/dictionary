@@ -9,22 +9,21 @@ import css from './styles.module.css';
 export const Navigation = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const [disabled, setDisabled] = useState(
-    Boolean(location.state?.prevPathname)
-  );
+  const [showBtn, setShowBtn] = useState(Boolean(location.state?.prevPathname));
 
   useEffect(() => {
-    setDisabled(location.pathname === '/');
+    setShowBtn(location.pathname !== '/');
   }, [location.pathname]);
 
   return (
     <div className={css.wrap}>
-      <Button
-        onClick={() => navigate(-1)}
-        shape="circle"
-        disabled={disabled}
-        icon={<LeftOutlined />}
-      />
+      {showBtn && (
+        <Button
+          onClick={() => navigate(-1)}
+          shape="circle"
+          icon={<LeftOutlined />}
+        />
+      )}
     </div>
   );
 };

@@ -1,71 +1,52 @@
-import { action, makeObservable, observable, flow, computed } from 'mobx';
+import { action, makeObservable, flow, toJS } from 'mobx';
+
+import { Word } from 'renderer/collaborative/types';
 import { WordsStore } from '../index';
-import { deleteWords } from '../../../repository';
+import { createWord, deleteWords } from '../../../repository';
+import { CreateWord } from '../../../repository/endpoints';
 
 export class Control {
   public root;
-
-  /** @description - Активация режима удаления */
-  public isDeleteMode = false;
-
-  /** @description - Активация режима редактирования */
-  public isUpdateMode = false;
-
-  /** @description - Массив id слов, которые необходимо удалить */
-  public toDeleteWords: Record<number, boolean> = {};
-
-  /** @description - Массив слов для обновления */
-  public toUpdateWords = [];
 
   constructor(root: WordsStore) {
     this.root = root;
 
     makeObservable(this, {
-      isDeleteMode: observable,
-      isUpdateMode: observable,
-
       deleteWords: action.bound,
-      addWordToDelete: action.bound,
-      activateDeleteMode: action.bound,
-      activateUpdateMode: action.bound,
-
-      toDeleteWordIds: computed,
+      createWord: action.bound,
+      addWordLocally: action,
+      deleteWordsLocally: action.bound,
     });
   }
 
-  public deleteWords = flow(function* (this: Control) {
-    const status = yield deleteWords(this.toDeleteWordIds);
-    console.log(status);
-    this.root.deleteWordsLocally(this.toDeleteWordIds);
+  public deleteWords = flow(function* (this: Control, ids: number[]) {
+    const wasDelete = yield deleteWords(ids);
 
-    this.toDeleteWords = {};
+    if (wasDelete) {
+      this.deleteWordsLocally(ids);
+    }
   });
 
-  public addWordToDelete(word: Record<number, boolean>) {
-    this.toDeleteWords = {
-      ...this.toDeleteWords,
-      ...word,
-    };
+  public createWord = flow(function* (
+    this: Control,
+    params: CreateWord['payload']
+  ) {
+    const { id } = yield createWord(params);
+
+    this.addWordLocally({ id, ...params });
+  });
+
+  public addWordLocally(word: Word) {
+    if (this.root.wordsList) {
+      this.root.wordsList?.push(word);
+    }
   }
 
-  public activateDeleteMode(value: boolean) {
-    this.isDeleteMode = value;
-  }
-
-  public activateUpdateMode(value: boolean) {
-    this.isUpdateMode = value;
-  }
-
-  get toDeleteWordIds() {
-    return Object.entries(this.toDeleteWords).reduce<number[]>(
-      (acc, [id, checked]) => {
-        if (checked) {
-          acc.push(Number(id));
-        }
-
-        return acc;
-      },
-      []
-    );
+  public deleteWordsLocally(wordIds: number[]) {
+    if (this.root.wordsList) {
+      this.root.wordsList = this.root.wordsList?.filter(
+        ({ id }) => !wordIds.includes(id)
+      );
+    }
   }
 }
